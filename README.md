@@ -1,5 +1,9 @@
 # go-git-open
 
+[![Build Status](https://img.shields.io/endpoint.svg?url=https://actions-badge.atrox.dev/mogensen/go-git-open/badge)](https://actions-badge.atrox.dev/mogensen/go-git-open/goto)
+[![Go Report Card](https://goreportcard.com/badge/github.com/mogensen/go-git-open)](https://goreportcard.com/report/github.com/mogensen/go-git-open)
+[![codecov](https://codecov.io/gh/mogensen/go-git-open/branch/master/graph/badge.svg)](https://codecov.io/gh/mogensen/go-git-open)
+
 This is an extension for the `git` cli, that allows you to open any git repository in your browser.
 
 Just type `git open` to open the repo website.

@@ -40,7 +40,7 @@ func Test_getURLFromGitRepo(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			dir, err := ioutil.TempDir("", "clone-example-"+tt.name)
+			dir, err := ioutil.TempDir("", "go-git-open")
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -93,7 +93,7 @@ func Test_getOverwriteDomain(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			dir, err := ioutil.TempDir("", "clone-example-"+tt.name)
+			dir, err := ioutil.TempDir("", "go-git-open")
 			if err != nil {
 				log.Fatal(err)
 			}
