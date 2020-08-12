@@ -4,11 +4,20 @@ import (
 	"net/url"
 )
 
-// GenericURL creates a browser url for:
-// - Github
-func GenericURL(repoURL *url.URL, branch string) (*url.URL, error) {
+// GenericUpstream is tested for
+// - Github.com
+// - Gist.Github.com
+type GenericUpstream struct{}
+
+// WillHandle for generic is always true.. This is used as a sane fallback
+func (u GenericUpstream) WillHandle(repoURL *url.URL) bool {
+	return true
+}
+
+// BranchURL for all generic git repoes
+func (u GenericUpstream) BranchURL(repoURL *url.URL, branch string) (string, error) {
 	if branch != "master" {
 		repoURL.Path = repoURL.Path + "/tree/" + branch
 	}
-	return repoURL, nil
+	return repoURL.String(), nil
 }

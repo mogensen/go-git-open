@@ -5,12 +5,22 @@ import (
 	"strings"
 )
 
-// AzureURL creates a browser url for Azure DevOps
+// AzureDevopsUpstream is tested for
+// - dev.azure.com
+// - ssh.dev.azure.com
+type AzureDevopsUpstream struct{}
+
+// WillHandle for azure devops
+func (u AzureDevopsUpstream) WillHandle(repoURL *url.URL) bool {
+	return strings.Contains(strings.ToLower(repoURL.Host), "azure.com")
+}
+
+// BranchURL creates a browser url for Azure DevOps
 // https://ssh.dev.azure.com/v3/CORP/Project/GitRepo
 // https://dev.azure.com/CORP/Project/_git/GitRepo
 // For branch:
 // https://dev.azure.com/CORP/Project/_git/GitRepo?version=GBdevelop
-func AzureURL(repoURL *url.URL, branch string) (*url.URL, error) {
+func (u AzureDevopsUpstream) BranchURL(repoURL *url.URL, branch string) (string, error) {
 
 	repoURL.Path = strings.TrimPrefix(repoURL.Path, "v3/")
 	repoURL.Path = strings.TrimPrefix(repoURL.Path, "/v3/")
@@ -28,5 +38,5 @@ func AzureURL(repoURL *url.URL, branch string) (*url.URL, error) {
 		repoURL.RawQuery = q.Encode()
 	}
 
-	return repoURL, nil
+	return repoURL.String(), nil
 }
