@@ -17,7 +17,7 @@ git open
 
 ## Installation
 
-Download the binary from the [Latest Release](https://github.com/mogensen/go-git-open/releases/latest/) and add it to your path (`/usr`)
+Download the binary from the [Latest Release](https://github.com/mogensen/go-git-open/releases/latest/) and add it to your path (fx. `/usr/local/bin/git-open`)
 
 ## Supported remote repositories
 
