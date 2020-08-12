@@ -27,11 +27,11 @@ jobs:
       -
         name: Build & Test
         run: |
-          go build -v ./cmd/git-goopen 
+          go build -v ./cmd/git-open 
           go test ./...
       -
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@master
         with:
           args: release --snapshot --skip-publish --rm-dist
-          workdir: ./cmd/git-goopen
+          workdir: ./cmd/git-open

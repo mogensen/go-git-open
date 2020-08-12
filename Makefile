@@ -12,7 +12,7 @@ report-card: ## Generate static analysis report
 	goreportcard-cli -v
 
 build: ## Builds a static linked binary
-	go build -o git-open ./cmd/git-goopen
+	go build -o git-open ./cmd/git-open
 
 install: ## Installs the static linked binary
-	go install ./cmd/git-goopen
+	go install ./cmd/git-open
