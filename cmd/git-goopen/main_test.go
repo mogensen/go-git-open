@@ -1,14 +1,10 @@
 package main
 
 import (
+	"io/ioutil"
 	"log"
+	"os"
 	"testing"
-
-	"github.com/go-git/go-billy/v5/memfs"
-	"github.com/go-git/go-git/v5"
-	"github.com/go-git/go-git/v5/plumbing"
-	"github.com/go-git/go-git/v5/plumbing/format/config"
-	"github.com/go-git/go-git/v5/storage/memory"
 )
 
 func Test_getURLFromGitRepo(t *testing.T) {
@@ -44,17 +40,13 @@ func Test_getURLFromGitRepo(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			fs := memfs.New()
-			// Git objects storer based on memory
-			storer := memory.NewStorage()
+			dir, err := ioutil.TempDir("", "clone-example-"+tt.name)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer os.RemoveAll(dir) // clean up
 
-			// Clones the repository into the worktree (fs) and storer all the .git
-			// content into the storer
-			gitRepo, err := git.Clone(storer, fs, &git.CloneOptions{
-				URL:           tt.args.gitRemote,
-				SingleBranch:  true,
-				ReferenceName: plumbing.NewBranchReferenceName(tt.args.gitBranch),
-			})
+			gitRepo, err := newRepo(dir, tt.args.gitRemote, tt.args.gitBranch)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -82,17 +74,17 @@ func Test_getOverwriteDomain(t *testing.T) {
 		want string
 	}{
 		{
-			name: "simple",
+			name: "simple with overwrite",
 			args: args{
-				gitRemote:  "git@github.com:git-fixtures/basic.git",
+				gitRemote:  "https://github.com/git-fixtures/basic",
 				openDomain: "myrepo.com",
 			},
 			want: "myrepo.com",
 		},
 		{
-			name: "simple",
+			name: "simple without overwrite",
 			args: args{
-				gitRemote:  "git@github.com:git-fixtures/basic.git",
+				gitRemote:  "https://github.com/git-fixtures/basic",
 				openDomain: "",
 			},
 			want: "",
@@ -101,20 +93,21 @@ func Test_getOverwriteDomain(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			fs := memfs.New()
-			// Git objects storer based on memory
-			storer := memory.NewStorage()
+			dir, err := ioutil.TempDir("", "clone-example-"+tt.name)
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer os.RemoveAll(dir) // clean up
 
-			// Clones the repository into the worktree (fs) and storer all the .git
-			// content into the storer
-			gitRepo, err := git.Clone(storer, fs, &git.CloneOptions{
-				URL:           tt.args.gitRemote,
-				SingleBranch:  true,
-				ReferenceName: plumbing.NewBranchReferenceName("master"),
-			})
+			gitRepo, err := newRepo(dir, tt.args.gitRemote, "master")
+			if err != nil {
+				log.Fatal(err)
+			}
 
+			// Add git config open.domain
 			c, _ := gitRepo.Config()
-			c.Raw.Sections = append(c.Raw.Sections, &config.Section{Name: "open", Options: config.Options{&config.Option{Key: "domain", Value: tt.args.openDomain}}})
+			c.Raw.AddOption("open", "", "domain", tt.args.openDomain)
+			saveGitConfig(dir, c)
 
 			if err != nil {
 				log.Fatal(err)
