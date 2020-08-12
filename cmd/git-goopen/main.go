@@ -87,7 +87,9 @@ func getOverwriteDomain(gitRepo *git.Repository) string {
 	}
 
 	// Lookup Hostname alias in ssh config, empty if none is found
-	return ssh_config.Get(url.Host, "HostName")
+	sshConf := ssh_config.DefaultUserSettings
+	sshConf.IgnoreErrors = true
+	return sshConf.Get(url.Host, "HostName")
 }
 
 func openBrowser(url string) {
