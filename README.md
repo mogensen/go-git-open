@@ -3,6 +3,7 @@
 [![Build Status](https://img.shields.io/endpoint.svg?url=https://actions-badge.atrox.dev/mogensen/go-git-open/badge)](https://actions-badge.atrox.dev/mogensen/go-git-open/goto)
 [![Go Report Card](https://goreportcard.com/badge/github.com/mogensen/go-git-open)](https://goreportcard.com/report/github.com/mogensen/go-git-open)
 [![codecov](https://codecov.io/gh/mogensen/go-git-open/branch/master/graph/badge.svg)](https://codecov.io/gh/mogensen/go-git-open)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmogensen%2Fgo-git-open.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmogensen%2Fgo-git-open?ref=badge_shield)
 
 This is an extension for the `git` cli, that allows you to open any git repository in your browser.
 
@@ -56,3 +57,6 @@ This project is based on the idea from [paulirish/git-open](https://github.com/p
 ## License
 
 Licensed under MIT. http://opensource.org/licenses/MIT
+
+
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fmogensen%2Fgo-git-open.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fmogensen%2Fgo-git-open?ref=badge_large)
