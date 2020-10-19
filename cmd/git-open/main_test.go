@@ -7,62 +7,6 @@ import (
 	"testing"
 )
 
-func Test_getURLFromGitRepo(t *testing.T) {
-	type args struct {
-		gitRemote string
-		gitBranch string
-	}
-	tests := []struct {
-		name    string
-		args    args
-		want    string
-		wantErr bool
-	}{
-		{
-			name: "gh: basic",
-			args: args{
-				gitRemote: "git@github.com:git-fixtures/basic.git",
-				gitBranch: "master",
-			},
-			want:    "https://github.com/git-fixtures/basic",
-			wantErr: false,
-		},
-		{
-			name: "gh: basic",
-			args: args{
-				gitRemote: "git@github.com:git-fixtures/basic.git",
-				gitBranch: "branch",
-			},
-			want:    "https://github.com/git-fixtures/basic/tree/branch",
-			wantErr: false,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-
-			dir, err := ioutil.TempDir("", "go-git-open")
-			if err != nil {
-				log.Fatal(err)
-			}
-			defer os.RemoveAll(dir) // clean up
-
-			gitRepo, err := newRepo(dir, tt.args.gitRemote, tt.args.gitBranch)
-			if err != nil {
-				log.Fatal(err)
-			}
-
-			got, err := getURLFromGitRepo(gitRepo)
-			if (err != nil) != tt.wantErr {
-				t.Errorf("getURLFromGitRepo() error = %v, wantErr %v", err, tt.wantErr)
-				return
-			}
-			if got != tt.want {
-				t.Errorf("getURLFromGitRepo() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func Test_getOverwriteDomain(t *testing.T) {
 	type args struct {
 		gitRemote  string
@@ -115,6 +59,76 @@ func Test_getOverwriteDomain(t *testing.T) {
 
 			if got := getOverwriteDomain(gitRepo); got != tt.want {
 				t.Errorf("getOverwriteDomain() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_getRepoInfo(t *testing.T) {
+	type args struct {
+		gitRemote string
+		gitBranch string
+	}
+	tests := []struct {
+		name       string
+		args       args
+		wantRemote string
+		wantDomain string
+		wantBranch string
+		wantTag    string
+		wantErr    bool
+	}{
+		{
+			name: "gh: basic",
+			args: args{
+				gitRemote: "git@github.com:git-fixtures/basic.git",
+				gitBranch: "master",
+			},
+			wantRemote: "https://github.com/git-fixtures/basic.git",
+			wantBranch: "master",
+			wantErr:    false,
+		},
+		{
+			name: "gh: basic",
+			args: args{
+				gitRemote: "git@github.com:git-fixtures/basic.git",
+				gitBranch: "branch",
+			},
+			wantRemote: "https://github.com/git-fixtures/basic.git",
+			wantBranch: "branch",
+			wantErr:    false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+
+			dir, err := ioutil.TempDir("", "go-git-open")
+			if err != nil {
+				log.Fatal(err)
+			}
+			defer os.RemoveAll(dir) // clean up
+
+			gitRepo, err := newRepo(dir, tt.args.gitRemote, tt.args.gitBranch)
+			if err != nil {
+				log.Fatal(err)
+			}
+
+			gotRemote, gotDomain, gotBranch, gotTag, err := getRepoInfo(gitRepo)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("getRepoInfo() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if gotRemote != tt.wantRemote {
+				t.Errorf("getRepoInfo() gotRemote = %v, want %v", gotRemote, tt.wantRemote)
+			}
+			if gotDomain != tt.wantDomain {
+				t.Errorf("getRepoInfo() gotDomain = %v, want %v", gotDomain, tt.wantDomain)
+			}
+			if gotBranch != tt.wantBranch {
+				t.Errorf("getRepoInfo() gotBranch = %v, want %v", gotBranch, tt.wantBranch)
+			}
+			if gotTag != tt.wantTag {
+				t.Errorf("getRepoInfo() gotTag = %v, want %v", gotTag, tt.wantTag)
 			}
 		})
 	}

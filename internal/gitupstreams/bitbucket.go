@@ -26,3 +26,14 @@ func (u BitbucketOrgUpstream) BranchURL(repoURL *url.URL, branch string) (string
 	}
 	return repoURL.String(), nil
 }
+
+// PullRequestURL creates a browser url for Bitbucket.Org
+// For branch:
+//  - https://bitbucket.org/fdfapps/raceapp/pull-requests/new?source=feature%2FCaptureCheckpoints
+func (u BitbucketOrgUpstream) PullRequestURL(repoURL *url.URL, branch string) (string, error) {
+	repoURL.Path = repoURL.Path + "/pull-requests/new"
+	q := make(url.Values)
+	q.Add("source", branch)
+	repoURL.RawQuery = q.Encode()
+	return repoURL.String(), nil
+}

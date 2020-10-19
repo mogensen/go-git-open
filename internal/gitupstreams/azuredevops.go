@@ -22,16 +22,7 @@ func (u AzureDevopsUpstream) WillHandle(repoURL *url.URL) bool {
 // https://dev.azure.com/CORP/Project/_git/GitRepo?version=GBdevelop
 func (u AzureDevopsUpstream) BranchURL(repoURL *url.URL, branch string) (string, error) {
 
-	repoURL.Path = strings.TrimPrefix(repoURL.Path, "v3/")
-	repoURL.Path = strings.TrimPrefix(repoURL.Path, "/v3/")
-
-	pathParts := strings.Split(repoURL.Path, "/")
-	repoURL.Path = pathParts[0] + "/" + pathParts[1] + "/_git/" + pathParts[2]
-
-	if repoURL.Host == "ssh.dev.azure.com" {
-		repoURL.Host = "dev.azure.com"
-	}
-
+	u.cleanURL(repoURL)
 	if branch != "master" {
 		q := make(url.Values)
 		q.Add("version", "GB"+branch)
@@ -39,4 +30,40 @@ func (u AzureDevopsUpstream) BranchURL(repoURL *url.URL, branch string) (string,
 	}
 
 	return repoURL.String(), nil
+}
+
+// PullRequestURL creates a browser url for Azure DevOps
+// https://ssh.dev.azure.com/v3/CORP/Project/GitRepo
+// https://dev.azure.com/CORP/Project/_git/GitRepo
+// For pull-requests:
+// https://dev.azure.com/CORP/Project/_git/GitRepo/pullrequestcreate?sourceRef=develop&targetRef=master
+func (u AzureDevopsUpstream) PullRequestURL(repoURL *url.URL, branch string) (string, error) {
+
+	u.cleanURL(repoURL)
+	repoURL.Path += "/pullrequestcreate"
+
+	if branch != "master" {
+		q := make(url.Values)
+		q.Add("sourceRef", branch)
+		q.Add("targetRef", "master")
+		repoURL.RawQuery = q.Encode()
+	}
+
+	return repoURL.String(), nil
+}
+
+func (u AzureDevopsUpstream) cleanURL(repoURL *url.URL) {
+	pathParts := strings.Split(repoURL.Path, "/")
+	newParts := []string{}
+	for _, part := range pathParts {
+		if part != "_git" && part != "v3" && part != "" {
+			newParts = append(newParts, part)
+		}
+	}
+
+	repoURL.Path = newParts[0] + "/" + newParts[1] + "/_git/" + newParts[2]
+
+	if repoURL.Host == "ssh.dev.azure.com" {
+		repoURL.Host = "dev.azure.com"
+	}
 }

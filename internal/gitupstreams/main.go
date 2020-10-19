@@ -27,6 +27,7 @@ func NewGitURLHandler() GitURLHandler {
 type upstream interface {
 	WillHandle(repoURL *url.URL) bool
 	BranchURL(repoURL *url.URL, branch string) (string, error)
+	PullRequestURL(repoURL *url.URL, branch string) (string, error)
 }
 
 // GetBrowerURL parses a git remote url, and create a url to be used in a browser
@@ -43,6 +44,26 @@ func (g GitURLHandler) GetBrowerURL(remoteURL string, domain, branch string) (st
 	for _, h := range g.handlers {
 		if h.WillHandle(url) {
 			return h.BranchURL(url, branch)
+		}
+	}
+	// This should never happen, as the generic handler will try to handle anything
+	return "", fmt.Errorf("Found no handlers for url: %s", url.String())
+}
+
+// GetPullRequestURL parses a git remote url, and create a url to be used in a browser
+func (g GitURLHandler) GetPullRequestURL(remoteURL string, domain, branch string) (string, error) {
+	url, err := getURL(remoteURL)
+	if err != nil {
+		return "", err
+	}
+
+	if domain != "" {
+		url.Host = domain
+	}
+
+	for _, h := range g.handlers {
+		if h.WillHandle(url) {
+			return h.PullRequestURL(url, branch)
 		}
 	}
 	// This should never happen, as the generic handler will try to handle anything
