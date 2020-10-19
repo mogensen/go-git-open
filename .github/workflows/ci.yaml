@@ -18,7 +18,7 @@ jobs:
         name: Checkout
         uses: actions/checkout@v2
       -
-        uses: actions/setup-go@v2-beta
+        uses: actions/setup-go@v2
         with:
           go-version: '^1.14.0'
       -
@@ -31,7 +31,7 @@ jobs:
           go test ./...
       -
         name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@master
+        uses: goreleaser/goreleaser-action@v2
         with:
           args: release --snapshot --skip-publish --rm-dist
           workdir: ./cmd/git-open
