@@ -56,11 +56,11 @@ func makeACommit(repo *git.Repository, directory string, random_stuff string) {
 		log.Fatalf("Broke: %v", err)
 	}
 	// Info("git status --porcelain")
-	status, err := w.Status()
+	_, err = w.Status()
 	if err != nil {
 		log.Fatalf("Broke: %v", err)
 	}
-	fmt.Println(status)
+
 	// Info("git commit -m \"example go-git commit\"")
 	commit, err := w.Commit("example go-git commit", &git.CommitOptions{
 		Author: &object.Signature{
@@ -73,11 +73,10 @@ func makeACommit(repo *git.Repository, directory string, random_stuff string) {
 		log.Fatalf("Broke: %v", err)
 	}
 	// Info("git show -s")
-	obj, err := repo.CommitObject(commit)
+	_, err = repo.CommitObject(commit)
 	if err != nil {
 		log.Fatalf("Broke: %v", err)
 	}
-	fmt.Println(obj)
 }
 
 func createNewBranch(repo *git.Repository, branchName string) {

@@ -17,7 +17,27 @@ git open
 
 ## Installation
 
-Download the binary from the [Latest Release](https://github.com/mogensen/go-git-open/releases/latest/) and add it to your path (fx. `/usr/local/bin/git-open`)
+### Linux
+
+```bash
+curl -Lo /tmp/git-open.tar.gz https://github.com/mogensen/go-git-open/releases/download/v0.0.1/git-open_Linux_x86_64.tar.gz
+tar xzvf /tmp/git-open.tar.gz -C /tmp
+chmod +x /tmp/git-open 
+sudo mv /tmp/git-open /usr/local/bin
+```
+
+### macOS
+```bash
+curl -Lo /tmp/git-open.tar.gz https://github.com/mogensen/go-git-open/releases/download/v0.0.1/git-open_Darwin_x86_64.tar.gz
+tar xzvf /tmp/git-open.tar.gz -C /tmp
+chmod +x /tmp/git-open 
+sudo mv /tmp/git-open /usr/local/bin
+```
+
+### Windows
+
+Download the binary from the [Latest Release](https://github.com/mogensen/go-git-open/releases/latest/) and add it to your path.
+
 
 ## Supported remote repositories
 

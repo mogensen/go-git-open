@@ -3,32 +3,17 @@ package main
 import (
 	"fmt"
 	"log"
-	"os/exec"
-	"runtime"
 
 	"github.com/go-git/go-git/v5"
 	"github.com/kevinburke/ssh_config"
-	"github.com/mogensen/go-git-open/internal/gitupstreams"
 	gurl "github.com/whilp/git-urls"
 )
 
 func main() {
-	gitRepo, err := git.PlainOpenWithOptions(".", &git.PlainOpenOptions{DetectDotGit: true})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	url, err := getURLFromGitRepo(gitRepo)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	openBrowser(url)
+	Execute()
 }
 
-func getURLFromGitRepo(gitRepo *git.Repository) (string, error) {
-
-	guh := gitupstreams.NewGitURLHandler()
+func getRepoInfo(gitRepo *git.Repository) (remote string, domain string, branch string, tag string, err error) {
 
 	list, err := gitRepo.Remotes()
 	if err != nil {
@@ -43,21 +28,15 @@ func getURLFromGitRepo(gitRepo *git.Repository) (string, error) {
 
 		h, err := gitRepo.Head()
 		if err != nil {
-			return "", err
+			return "", "", "", "", err
 		}
 		if h.Name().IsBranch() {
 			branch = h.Name().Short()
 		}
+		return r.Config().URLs[0], domain, branch, "", nil
 
-		url, err := guh.GetBrowerURL(r.Config().URLs[0], domain, branch)
-		if err != nil {
-			return "", err
-		}
-
-		return url, nil
 	}
-
-	return "", fmt.Errorf("No remote url found")
+	return "", "", "", "", fmt.Errorf("No remote url found")
 }
 
 func getOverwriteDomain(gitRepo *git.Repository) string {
@@ -90,23 +69,4 @@ func getOverwriteDomain(gitRepo *git.Repository) string {
 	sshConf := ssh_config.DefaultUserSettings
 	sshConf.IgnoreErrors = true
 	return sshConf.Get(url.Host, "HostName")
-}
-
-func openBrowser(url string) {
-	var err error
-
-	switch runtime.GOOS {
-	case "linux":
-		err = exec.Command("xdg-open", url).Start()
-	case "windows":
-		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
-	case "darwin":
-		err = exec.Command("open", url).Start()
-	default:
-		err = fmt.Errorf("unsupported platform")
-	}
-	if err != nil {
-		log.Fatal(err)
-	}
-
 }
