@@ -1,7 +1,6 @@
 package gitupstreams
 
 import (
-	"fmt"
 	"net/url"
 	"strings"
 
@@ -19,7 +18,6 @@ func NewGitURLHandler() GitURLHandler {
 		handlers: []upstream{
 			AzureDevopsUpstream{},
 			BitbucketOrgUpstream{},
-			GenericUpstream{},
 		},
 	}
 }
@@ -46,8 +44,7 @@ func (g GitURLHandler) GetBrowerURL(remoteURL string, domain, branch string) (st
 			return h.BranchURL(url, branch)
 		}
 	}
-	// This should never happen, as the generic handler will try to handle anything
-	return "", fmt.Errorf("Found no handlers for url: %s", url.String())
+	return GenericUpstream{}.BranchURL(url, branch)
 }
 
 // GetPullRequestURL parses a git remote url, and create a url to be used in a browser
@@ -66,8 +63,7 @@ func (g GitURLHandler) GetPullRequestURL(remoteURL string, domain, branch string
 			return h.PullRequestURL(url, branch)
 		}
 	}
-	// This should never happen, as the generic handler will try to handle anything
-	return "", fmt.Errorf("Found no handlers for url: %s", url.String())
+	return GenericUpstream{}.PullRequestURL(url, branch)
 }
 
 func getURL(remote string) (*url.URL, error) {
