@@ -52,6 +52,20 @@ func (u AzureDevopsUpstream) PullRequestURL(repoURL *url.URL, branch string) (st
 	return repoURL.String(), nil
 }
 
+// CIURL creates a browser url for Azure DevOps
+// https://ssh.dev.azure.com/v3/CORP/Project/GitRepo
+// https://dev.azure.com/CORP/Project/_git/GitRepo
+// For pull-requests:
+// https://dev.azure.com/CORP/Project/_build
+func (u AzureDevopsUpstream) CIURL(repoURL *url.URL, branch string) (string, error) {
+
+	u.cleanURL(repoURL)
+	pathParts := strings.Split(repoURL.Path, "/")
+	repoURL.Path = pathParts[0] + "/" + pathParts[1] + "/_build"
+
+	return repoURL.String(), nil
+}
+
 func (u AzureDevopsUpstream) cleanURL(repoURL *url.URL) {
 	pathParts := strings.Split(repoURL.Path, "/")
 	newParts := []string{}

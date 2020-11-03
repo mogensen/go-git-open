@@ -51,4 +51,6 @@ func init() {
 	rootCmd.PersistentFlags().BoolVarP(&Print, "print", "p", false, "print the browser url, instead of opening it")
 	rootCmd.AddCommand(prCmd)
 	rootCmd.AddCommand(pullRequestCmd)
+	rootCmd.AddCommand(ciCmd)
+	rootCmd.AddCommand(continuousIntegrationCmd)
 }

@@ -30,3 +30,15 @@ func (u GenericUpstream) PullRequestURL(repoURL *url.URL, branch string) (string
 	}
 	return repoURL.String(), nil
 }
+
+// CIURL for all generic git repoes
+// https://github.com/user/repo/actions?query=branch%3Amain
+func (u GenericUpstream) CIURL(repoURL *url.URL, branch string) (string, error) {
+
+	repoURL.Path = repoURL.Path + "/actions"
+	q := make(url.Values)
+	q.Add("query", "branch:"+branch)
+	repoURL.RawQuery = q.Encode()
+
+	return repoURL.String(), nil
+}

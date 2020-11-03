@@ -37,3 +37,17 @@ func (u BitbucketOrgUpstream) PullRequestURL(repoURL *url.URL, branch string) (s
 	repoURL.RawQuery = q.Encode()
 	return repoURL.String(), nil
 }
+
+// CIURL creates a browser url for Bitbucket.Org
+// For branch:
+//  - https://bitbucket.org/fdfapps/raceapp/addon/pipelines/home
+func (u BitbucketOrgUpstream) CIURL(repoURL *url.URL, branch string) (string, error) {
+	repoURL.Path = repoURL.Path + "/addon/pipelines/home"
+		if branch != "master" {
+		repoURL.Path = repoURL.Path + "/src/HEAD/"
+		q := make(url.Values)
+		q.Add("at", branch)
+		repoURL.RawQuery = q.Encode()
+	}
+	return repoURL.String(), nil
+}
