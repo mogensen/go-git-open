@@ -43,7 +43,7 @@ func (u BitbucketOrgUpstream) PullRequestURL(repoURL *url.URL, branch string) (s
 //  - https://bitbucket.org/fdfapps/raceapp/addon/pipelines/home
 func (u BitbucketOrgUpstream) CIURL(repoURL *url.URL, branch string) (string, error) {
 	repoURL.Path = repoURL.Path + "/addon/pipelines/home"
-		if branch != "master" {
+	if branch != "master" {
 		repoURL.Path = repoURL.Path + "/src/HEAD/"
 		q := make(url.Values)
 		q.Add("at", branch)

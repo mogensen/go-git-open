@@ -10,6 +10,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Print overrides the browser, so the resulting url is printed to stdout
 var Print bool
 
 // rootCmd represents the base command when called without any subcommands

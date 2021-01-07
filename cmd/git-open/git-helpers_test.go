@@ -32,13 +32,16 @@ func newRepo(directory, repoURL, branch string) (*git.Repository, error) {
 		Name: "example",
 		URLs: []string{"https://github.com/git-fixtures/basic.git"},
 	})
+	if err != nil {
+		return nil, err
+	}
 	if branch != "master" {
 		createNewBranch(r, branch)
 	}
 	return r, nil
 }
 
-func makeACommit(repo *git.Repository, directory string, random_stuff string) {
+func makeACommit(repo *git.Repository, directory string, randomStuff string) {
 	// Pulled from the commit demo
 	w, err := repo.Worktree()
 	if err != nil {
@@ -46,7 +49,7 @@ func makeACommit(repo *git.Repository, directory string, random_stuff string) {
 	}
 	// Info("echo \"hello world!\" > example-git-file")
 	filename := filepath.Join(directory, "example-git-file")
-	err = ioutil.WriteFile(filename, []byte(random_stuff), 0644)
+	err = ioutil.WriteFile(filename, []byte(randomStuff), 0644)
 	if err != nil {
 		log.Fatalf("Broke: %v", err)
 	}

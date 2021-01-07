@@ -50,6 +50,7 @@ The currently tested ones are:
 - gist.github.com
 - bitbucket.org
 - Azure DevOps
+- gitlab.com
 
 ## Configuration 
 

@@ -18,6 +18,7 @@ func NewGitURLHandler() GitURLHandler {
 		handlers: []upstream{
 			AzureDevopsUpstream{},
 			BitbucketOrgUpstream{},
+			GitlabUpstream{},
 		},
 	}
 }
