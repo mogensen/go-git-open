@@ -34,6 +34,11 @@ var pullRequestCmd = &cobra.Command{
 		}
 
 		guh := gitupstreams.NewGitURLHandler()
+		desiredUpstream := getOverwriteGitUpstream(gitRepo)
+		if desiredUpstream != "" {
+			guh = gitupstreams.NewGitURLHandlerWithOverwrite(desiredUpstream)
+		}
+
 		url, err := guh.GetPullRequestURL(remote, domain, branch)
 		if err != nil {
 			log.Fatal(err)

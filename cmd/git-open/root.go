@@ -30,6 +30,11 @@ var rootCmd = &cobra.Command{
 		}
 
 		guh := gitupstreams.NewGitURLHandler()
+		desiredUpstream := getOverwriteGitUpstream(gitRepo)
+		if desiredUpstream != "" {
+			guh = gitupstreams.NewGitURLHandlerWithOverwrite(desiredUpstream)
+		}
+
 		url, err := guh.GetBrowerURL(remote, domain, branch)
 		if err != nil {
 			log.Fatal(err)

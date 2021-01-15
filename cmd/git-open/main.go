@@ -70,3 +70,21 @@ func getOverwriteDomain(gitRepo *git.Repository) string {
 	sshConf.IgnoreErrors = true
 	return sshConf.Get(url.Host, "HostName")
 }
+
+func getOverwriteGitUpstream(gitRepo *git.Repository) string {
+
+	// If we cannot find any config, just give up
+	conf, err := gitRepo.Config()
+	if err != nil {
+		return ""
+	}
+
+	// If we find a open.domain config we use this
+	for _, s := range conf.Raw.Sections {
+		if s.Name == "open" {
+			return s.Options.Get("gitprovider")
+		}
+	}
+
+	return ""
+}

@@ -34,6 +34,11 @@ var continuousIntegrationCmd = &cobra.Command{
 		}
 
 		guh := gitupstreams.NewGitURLHandler()
+		desiredUpstream := getOverwriteGitUpstream(gitRepo)
+		if desiredUpstream != "" {
+			guh = gitupstreams.NewGitURLHandlerWithOverwrite(desiredUpstream)
+		}
+
 		url, err := guh.GetCIURL(remote, domain, branch)
 		if err != nil {
 			log.Fatal(err)

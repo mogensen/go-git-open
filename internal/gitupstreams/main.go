@@ -9,7 +9,26 @@ import (
 
 // GitURLHandler creates browser urls
 type GitURLHandler struct {
-	handlers []upstream
+	overwriteGitUpstream string
+	handlers             []upstream
+}
+
+// NewGitURLHandler creates a new GitURLHandler with all known upstreams configured
+func NewGitURLHandlerWithOverwrite(overwriteGitUpstream string) GitURLHandler {
+	var h upstream
+	switch overwriteGitUpstream {
+	case "azure":
+		h = AzureDevopsUpstream{}
+	case "bitbucketorg":
+		h = BitbucketOrgUpstream{}
+	case "gitlab":
+		h = GitlabUpstream{}
+	default:
+		h = GenericUpstream{}
+	}
+	return GitURLHandler{
+		handlers: []upstream{h},
+	}
 }
 
 // NewGitURLHandler creates a new GitURLHandler with all known upstreams configured
