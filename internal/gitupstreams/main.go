@@ -16,18 +16,22 @@ type GitURLHandler struct {
 // NewGitURLHandler creates a new GitURLHandler with all known upstreams configured
 func NewGitURLHandlerWithOverwrite(overwriteGitUpstream string) GitURLHandler {
 	var h upstream
+
 	switch overwriteGitUpstream {
 	case "azure":
 		h = AzureDevopsUpstream{}
 	case "bitbucketorg":
 		h = BitbucketOrgUpstream{}
+	case "bitbucket":
+		h = BitbucketUpstream{}
 	case "gitlab":
 		h = GitlabUpstream{}
 	default:
 		h = GenericUpstream{}
 	}
 	return GitURLHandler{
-		handlers: []upstream{h},
+		handlers:             []upstream{h},
+		overwriteGitUpstream: overwriteGitUpstream,
 	}
 }
 
@@ -37,6 +41,7 @@ func NewGitURLHandler() GitURLHandler {
 		handlers: []upstream{
 			AzureDevopsUpstream{},
 			BitbucketOrgUpstream{},
+			BitbucketUpstream{},
 			GitlabUpstream{},
 		},
 	}
@@ -60,6 +65,11 @@ func (g GitURLHandler) GetBrowerURL(remoteURL string, domain, branch string) (st
 		url.Host = domain
 	}
 
+	// If we have an overwrite git upstream, we dont ask if the provider will handle the url
+	if g.overwriteGitUpstream != "" {
+		return g.handlers[0].BranchURL(url, branch)
+	}
+
 	for _, h := range g.handlers {
 		if h.WillHandle(url) {
 			return h.BranchURL(url, branch)
@@ -79,6 +89,11 @@ func (g GitURLHandler) GetPullRequestURL(remoteURL string, domain, branch string
 		url.Host = domain
 	}
 
+	// If we have an overwrite git upstream, we dont ask if the provider will handle the url
+	if g.overwriteGitUpstream != "" {
+		return g.handlers[0].PullRequestURL(url, branch)
+	}
+
 	for _, h := range g.handlers {
 		if h.WillHandle(url) {
 			return h.PullRequestURL(url, branch)
@@ -96,6 +111,11 @@ func (g GitURLHandler) GetCIURL(remoteURL string, domain, branch string) (string
 
 	if domain != "" {
 		url.Host = domain
+	}
+
+	// If we have an overwrite git upstream, we dont ask if the provider will handle the url
+	if g.overwriteGitUpstream != "" {
+		return g.handlers[0].CIURL(url, branch)
 	}
 
 	for _, h := range g.handlers {
