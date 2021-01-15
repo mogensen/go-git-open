@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestGitlabUpstream_BranchURL(t *testing.T) {
+func TestBitbucketUpstream_BranchURL(t *testing.T) {
 	type args struct {
 		repoURL string
 		branch  string
@@ -19,19 +19,19 @@ func TestGitlabUpstream_BranchURL(t *testing.T) {
 		{
 			name: "https on master",
 			args: args{
-				repoURL: "https://gitlab.com/user/repo",
+				repoURL: "https://bitbucket.example.com/scm/user/repo",
 				branch:  "master",
 			},
-			want:    "https://gitlab.com/user/repo",
+			want:    "https://bitbucket.example.com/projects/user/repos/repo/browse?at=refs%2Fheads%2Fmaster",
 			wantErr: false,
 		},
 		{
 			name: "https on feature/demo",
 			args: args{
-				repoURL: "https://gitlab.com/user/project/repo",
+				repoURL: "https://bitbucket.example.com/scm/user/repo",
 				branch:  "feature/demo",
 			},
-			want:    "https://gitlab.com/user/project/repo/-/tree/feature/demo",
+			want:    "https://bitbucket.example.com/projects/user/repos/repo/browse?at=refs%2Fheads%2Ffeature%2Fdemo",
 			wantErr: false,
 		},
 	}
@@ -39,7 +39,7 @@ func TestGitlabUpstream_BranchURL(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			url, _ := url.Parse(tt.args.repoURL)
-			u := GitlabUpstream{}
+			u := BitbucketUpstream{}
 			got, err := u.BranchURL(url, tt.args.branch)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("BranchURL() error = %v, wantErr %v", err, tt.wantErr)
@@ -52,7 +52,7 @@ func TestGitlabUpstream_BranchURL(t *testing.T) {
 	}
 }
 
-func TestGitlabUpstream_PullRequestURL(t *testing.T) {
+func TestBitbucketUpstream_PullRequestURL(t *testing.T) {
 	type args struct {
 		repoURL string
 		branch  string
@@ -66,19 +66,19 @@ func TestGitlabUpstream_PullRequestURL(t *testing.T) {
 		{
 			name: "https on master",
 			args: args{
-				repoURL: "https://gitlab.com/user/project/repo",
+				repoURL: "https://bitbucket.example.com/scm/user/repo",
 				branch:  "master",
 			},
-			want:    "https://gitlab.com/user/project/repo/-/merge_requests/new",
+			want:    "https://bitbucket.example.com/projects/user/repos/repo/pull-requests?create=true&sourceBranch=refs%2Fheads%2Fmaster",
 			wantErr: false,
 		},
 		{
 			name: "https on feature/demo",
 			args: args{
-				repoURL: "https://gitlab.com/user/project/repo",
+				repoURL: "https://bitbucket.example.com/scm/user/repo",
 				branch:  "feature/demo",
 			},
-			want:    "https://gitlab.com/user/project/repo/-/merge_requests/new?merge_request%5Bsource_branch%5D=feature%2Fdemo&merge_request%5Btarget_branch%5D=master",
+			want:    "https://bitbucket.example.com/projects/user/repos/repo/pull-requests?create=true&sourceBranch=refs%2Fheads%2Ffeature%2Fdemo",
 			wantErr: false,
 		},
 	}
@@ -86,7 +86,7 @@ func TestGitlabUpstream_PullRequestURL(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			url, _ := url.Parse(tt.args.repoURL)
-			u := GitlabUpstream{}
+			u := BitbucketUpstream{}
 			got, err := u.PullRequestURL(url, tt.args.branch)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("PullRequestURL() error = %v, wantErr %v", err, tt.wantErr)
@@ -99,7 +99,7 @@ func TestGitlabUpstream_PullRequestURL(t *testing.T) {
 	}
 }
 
-func TestGitlabUpstream_CIURL(t *testing.T) {
+func TestBitbucketUpstream_CIURL(t *testing.T) {
 	type args struct {
 		repoURL string
 		branch  string
@@ -113,19 +113,19 @@ func TestGitlabUpstream_CIURL(t *testing.T) {
 		{
 			name: "https on master",
 			args: args{
-				repoURL: "https://gitlab.com/user/project/repo",
+				repoURL: "https://bitbucket.example.com/scm/user/repo",
 				branch:  "master",
 			},
-			want:    "https://gitlab.com/user/project/repo/-/pipelines?ref=master&scope=branches",
+			want:    "https://bitbucket.example.com/projects/user/repos/repo/builds?branch=refs%2Fheads%2Fmaster",
 			wantErr: false,
 		},
 		{
 			name: "https on feature/demo",
 			args: args{
-				repoURL: "https://gitlab.com/user/project/repo",
+				repoURL: "https://bitbucket.example.com/scm/user/repo",
 				branch:  "feature/demo",
 			},
-			want:    "https://gitlab.com/user/project/repo/-/pipelines?ref=feature%2Fdemo&scope=branches",
+			want:    "https://bitbucket.example.com/projects/user/repos/repo/builds?branch=refs%2Fheads%2Ffeature%2Fdemo",
 			wantErr: false,
 		},
 	}
@@ -133,7 +133,7 @@ func TestGitlabUpstream_CIURL(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 
 			url, _ := url.Parse(tt.args.repoURL)
-			u := GitlabUpstream{}
+			u := BitbucketUpstream{}
 			got, err := u.CIURL(url, tt.args.branch)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("CIURL() error = %v, wantErr %v", err, tt.wantErr)

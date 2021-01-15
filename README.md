@@ -49,6 +49,7 @@ The currently tested ones are:
 - github.com
 - gist.github.com
 - bitbucket.org
+- bitbucket - Selfhosted
 - Azure DevOps
 - gitlab.com
 
@@ -61,10 +62,23 @@ git config open.domain dev.azure.co
 
 ## Contributing & Development
 
+### New upstreams
+
+Adding new upstreams are welcome!
+
+Check list:
+
+- Add `internal/gitupstreams/mygit.go` with the implementation of how to create the urls
+- Add `internal/gitupstreams/mygit_test.go` containing tests for the upstream implementation
+- Add the new upstream in `internal/gitupstreams/main.go` both in `NewGitURLHandlerWithOverwrite()` and `NewGitURLHandler()`
+- Consider adding tests in `internal/gitupstreams/main_test.go`
+
 ### Testing
 
 ```sh
 go test ./...
+# and
+make test-coverage
 ```
 
 ## Related projects

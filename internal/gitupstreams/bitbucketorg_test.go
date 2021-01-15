@@ -42,11 +42,11 @@ func TestBitbucketOrgUpstream_BranchURL(t *testing.T) {
 			u := BitbucketOrgUpstream{}
 			got, err := u.BranchURL(url, tt.args.branch)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("AzureURL() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("BranchURL() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("AzureURL() = %v, want %v", got, tt.want)
+				t.Errorf("BranchURL() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -89,11 +89,11 @@ func TestBitbucketOrgUpstream_PullRequestURL(t *testing.T) {
 			u := BitbucketOrgUpstream{}
 			got, err := u.PullRequestURL(url, tt.args.branch)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("AzureURL() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("PullRequestURL() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("AzureURL() = %v, want %v", got, tt.want)
+				t.Errorf("PullRequestURL() = %v, want %v", got, tt.want)
 			}
 		})
 	}

@@ -13,7 +13,7 @@ type GitURLHandler struct {
 	handlers             []upstream
 }
 
-// NewGitURLHandler creates a new GitURLHandler with all known upstreams configured
+// NewGitURLHandlerWithOverwrite creates a new GitURLHandler containing only the specified upstream
 func NewGitURLHandlerWithOverwrite(overwriteGitUpstream string) GitURLHandler {
 	var h upstream
 
@@ -56,77 +56,50 @@ type upstream interface {
 
 // GetBrowerURL parses a git remote url, and create a url to be used in a browser
 func (g GitURLHandler) GetBrowerURL(remoteURL string, domain, branch string) (string, error) {
-	url, err := getURL(remoteURL)
+	url, err := getURL(remoteURL, domain)
 	if err != nil {
 		return "", err
 	}
 
-	if domain != "" {
-		url.Host = domain
-	}
+	return g.getProvider(url).BranchURL(url, branch)
 
-	// If we have an overwrite git upstream, we dont ask if the provider will handle the url
-	if g.overwriteGitUpstream != "" {
-		return g.handlers[0].BranchURL(url, branch)
-	}
-
-	for _, h := range g.handlers {
-		if h.WillHandle(url) {
-			return h.BranchURL(url, branch)
-		}
-	}
-	return GenericUpstream{}.BranchURL(url, branch)
 }
 
 // GetPullRequestURL parses a git remote url, and create a url to be used in a browser
 func (g GitURLHandler) GetPullRequestURL(remoteURL string, domain, branch string) (string, error) {
-	url, err := getURL(remoteURL)
+	url, err := getURL(remoteURL, domain)
 	if err != nil {
 		return "", err
 	}
 
-	if domain != "" {
-		url.Host = domain
-	}
-
-	// If we have an overwrite git upstream, we dont ask if the provider will handle the url
-	if g.overwriteGitUpstream != "" {
-		return g.handlers[0].PullRequestURL(url, branch)
-	}
-
-	for _, h := range g.handlers {
-		if h.WillHandle(url) {
-			return h.PullRequestURL(url, branch)
-		}
-	}
-	return GenericUpstream{}.PullRequestURL(url, branch)
+	return g.getProvider(url).PullRequestURL(url, branch)
 }
 
 // GetCIURL parses a git remote url, and create a url to be used in a browser
 func (g GitURLHandler) GetCIURL(remoteURL string, domain, branch string) (string, error) {
-	url, err := getURL(remoteURL)
+	url, err := getURL(remoteURL, domain)
 	if err != nil {
 		return "", err
 	}
 
-	if domain != "" {
-		url.Host = domain
-	}
+	return g.getProvider(url).CIURL(url, branch)
+}
 
+func (g GitURLHandler) getProvider(url *url.URL) upstream {
 	// If we have an overwrite git upstream, we dont ask if the provider will handle the url
 	if g.overwriteGitUpstream != "" {
-		return g.handlers[0].CIURL(url, branch)
+		return g.handlers[0]
 	}
 
 	for _, h := range g.handlers {
 		if h.WillHandle(url) {
-			return h.CIURL(url, branch)
+			return h
 		}
 	}
-	return GenericUpstream{}.CIURL(url, branch)
+	return GenericUpstream{}
 }
 
-func getURL(remote string) (*url.URL, error) {
+func getURL(remote, domain string) (*url.URL, error) {
 
 	u, err := gurl.Parse(remote)
 	if err != nil {
@@ -142,6 +115,10 @@ func getURL(remote string) (*url.URL, error) {
 	// If the URL is provided as "http", preserve that
 	if u.Scheme == "http" {
 		browserURL.Scheme = "http"
+	}
+
+	if domain != "" {
+		browserURL.Host = domain
 	}
 
 	return &browserURL, nil

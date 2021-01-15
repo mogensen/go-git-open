@@ -21,11 +21,11 @@ func (u BitbucketUpstream) WillHandle(repoURL *url.URL) bool {
 func (u BitbucketUpstream) BranchURL(repoURL *url.URL, branch string) (string, error) {
 	u.cleanURL(repoURL)
 	repoURL.Path = repoURL.Path + "/browse"
-	if branch != "master" {
-		q := make(url.Values)
-		q.Add("at", "refs/heads/"+branch)
-		repoURL.RawQuery = q.Encode()
-	}
+
+	q := make(url.Values)
+	q.Add("at", "refs/heads/"+branch)
+	repoURL.RawQuery = q.Encode()
+
 	return repoURL.String(), nil
 }
 
@@ -36,7 +36,7 @@ func (u BitbucketUpstream) PullRequestURL(repoURL *url.URL, branch string) (stri
 	u.cleanURL(repoURL)
 	repoURL.Path = repoURL.Path + "/pull-requests"
 	q := make(url.Values)
-	q.Add("create", "")
+	q.Add("create", "true")
 	q.Add("sourceBranch", "refs/heads/"+branch)
 	repoURL.RawQuery = q.Encode()
 	return repoURL.String(), nil
@@ -48,11 +48,9 @@ func (u BitbucketUpstream) PullRequestURL(repoURL *url.URL, branch string) (stri
 func (u BitbucketUpstream) CIURL(repoURL *url.URL, branch string) (string, error) {
 	u.cleanURL(repoURL)
 	repoURL.Path = repoURL.Path + "/builds"
-	if branch != "master" {
-		q := make(url.Values)
-		q.Add("branch", "refs/heads/"+branch)
-		repoURL.RawQuery = q.Encode()
-	}
+	q := make(url.Values)
+	q.Add("branch", "refs/heads/"+branch)
+	repoURL.RawQuery = q.Encode()
 	return repoURL.String(), nil
 }
 

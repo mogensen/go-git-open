@@ -55,15 +55,15 @@ func TestGenericUpstream_BranchURL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			url, _ := getURL(tt.args.repoURL)
+			url, _ := getURL(tt.args.repoURL, "")
 			u := GenericUpstream{}
 			got, err := u.BranchURL(url, tt.args.branch)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("GenericURL() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("BranchURL() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("GenericURL() = %v, want %v", got, tt.want)
+				t.Errorf("BranchURL() = %v, want %v", got, tt.want)
 			}
 		})
 	}
@@ -120,15 +120,15 @@ func TestGenericUpstream_PullRequestURL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 
-			url, _ := getURL(tt.args.repoURL)
+			url, _ := getURL(tt.args.repoURL, "")
 			u := GenericUpstream{}
 			got, err := u.PullRequestURL(url, tt.args.branch)
 			if (err != nil) != tt.wantErr {
-				t.Errorf("GenericURL() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("PullRequestURL() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
 			if got != tt.want {
-				t.Errorf("GenericURL() = %v, want %v", got, tt.want)
+				t.Errorf("PullRequestURL() = %v, want %v", got, tt.want)
 			}
 		})
 	}
